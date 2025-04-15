@@ -60,11 +60,11 @@
   <!-- Navbar -->
   <nav class="navbar navbar-dark px-3">
     <a class="navbar-brand" href="#">
-      <img src="logo.png" alt="Logo Loja">
+      <img src="img/store-icon.png" alt="Logo Loja">
     </a>
     <div>
-      <button class="btn btn-outline-light me-2">Login</button>
-      <button class="btn btn-outline-light">Cadastrar</button>
+      <button id="btnLogin" class="btn btn-outline-light me-2">Login</button>
+      <button id="btnCadastrar" class="btn btn-outline-light">Cadastrar</button>
       <button class="btn btn-light ms-3">
         <i class="fas fa-shopping-cart"></i> Carrinho
       </button>
@@ -80,7 +80,6 @@
           <li class="list-group-item">Eletrônicos</li>
           <li class="list-group-item">Roupas</li>
           <li class="list-group-item">Móveis</li>
-          <!-- Add more categories dynamically -->
         </ul>
       </div>
     </div>
@@ -133,14 +132,28 @@
     <p>Contato: contato@lojasesnai.com | (47) 99999-9999</p>
   </div>
 
+  <!-- Scripts -->
   <script>
-    document.getElementById('togglePainel').addEventListener('click', function() {
-      const painel = document.getElementById('painelCliente');
+    const painel = document.getElementById('painelCliente');
+    const toggleBtn = document.getElementById('togglePainel');
+    const btnLogin = document.getElementById('btnLogin');
+    const btnCadastrar = document.getElementById('btnCadastrar');
+
+    // Alternar com o botão de retração/expansão
+    toggleBtn.addEventListener('click', function() {
       painel.classList.toggle('expanded');
       this.textContent = painel.classList.contains('expanded') ? '-' : '+';
     });
 
-    // Exemplo: renderização de produtos
+    // Expandir ao clicar em Login ou Cadastrar
+    [btnLogin, btnCadastrar].forEach(btn => {
+      btn.addEventListener('click', function() {
+        painel.classList.add('expanded');
+        toggleBtn.textContent = '-';
+      });
+    });
+
+    // Produtos dinâmicos (exemplo)
     const produtos = [
       { nome: 'Notebook', imagem: 'produto1.jpg' },
       { nome: 'Camiseta', imagem: 'produto2.jpg' },
