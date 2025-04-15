@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Gerenciamento de Produtos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"/>
+    <style>
+        body { background-color: #f4f4f4; }
+        .card { margin-top: 20px; }
+    </style>
+</h:head>
+<h:body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Cadastro Detalhado de Produtos</h3>
+                    </div>
+                    <div class="card-body">
+                        <h:form id="produtoForm">
+                            <p:tabView>
+                                <p:tab title="Informações Básicas">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <p:outputLabel value="Nome" for="nome"/>
+                                            <p:inputText id="nome" value="#{produtoBean.produto.nome}" 
+                                                         required="true" styleClass="form-control"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <p:outputLabel value="Preço" for="preco"/>
+                                            <p:inputNumber id="preco" value="#{produtoBean.produto.preco}" 
+                                                           symbol="R$ " symbolPosition="p" 
+                                                           decimalSeparator="," thousandSeparator="."
+                                                           styleClass="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <p:outputLabel value="Categoria" for="categoria"/>
+                                            <p:selectOneMenu id="categoria" 
+                                                             value="#{produtoBean.produto.categoria}"
+                                                             converter="#{categoriaConverter}"
+                                                             styleClass="form-control">
+                                                <f:selectItems value="#{categoriaBean.categorias}" 
+                                                               var="cat" 
+                                                               itemLabel="#{cat.nome}" 
+                                                               itemValue="#{cat}"/>
+                                                <p:ajax event="change" update="@this"/>
+                                            </p:selectOneMenu>
+                                            <p:commandButton value="Nova Categoria" 
+                                                             oncomplete="PF('novaCategoriaDialog').show()" 
+                                                             styleClass="btn btn-secondary mt-2"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <p:outputLabel value="Tipo" for="tipo"/>
+                                            <p:inputText id="tipo" value="#{produtoBean.produto.tipo}" 
+                                                         styleClass="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <p:outputLabel value="Descrição" for="descricao"/>
+                                        <p:inputTextarea id="descricao" 
+                                                         value="#{produtoBean.produto.descricao}" 
+                                                         styleClass="form-control" rows="3"/>
+                                    </div>
+                                </p:tab>
+                                
+                                <p:tab title="Detalhes Técnicos">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <p:outputLabel value="Tamanho" for="tamanho"/>
+                                            <p:inputText id="tamanho" 
+                                                         value="#{produtoBean.produto.tamanho}" 
+                                                         styleClass="form-control"/>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <p:outputLabel value="Cor" for="cor"/>
+                                            <p:inputText id="cor" 
+                                                         value="#{produtoBean.produto.cor}" 
+                                                         styleClass="form-control"/>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <p:outputLabel value="Voltagem" for="voltagem"/>
+                                            <p:selectOneMenu id="voltagem" 
+                                                             value="#{produtoBean.produto.voltagem}"
+                                                             styleClass="form-control">
+                                                <f:selectItems value="#{produtoBean.voltagensDisponiveis}" 
+                                                               var="volt" 
+                                                               itemLabel="#{volt}" 
+                                                               itemValue="#{volt}"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3 mb-3">
+                                            <p:outputLabel value="Peso (kg)" for="peso"/>
+                                            <p:inputNumber id="peso" 
+                                                           value="#{produtoBean.produto.pesoKg}" 
+                                                           decimalPlaces="2" 
+                                                           styleClass="form-control"/>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <p:outputLabel value="Altura (cm)" for="altura"/>
+                                            <p:inputNumber id="altura" 
+                                                           value="#{produtoBean.produto.alturaCm}" 
+                                                           decimalPlaces="2" 
+                                                           styleClass="form-control"/>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <p:outputLabel value="Largura (cm)" for="largura"/>
+                                            <p:inputNumber id="largura" 
+                                                           value="#{produtoBean.produto.larguraCm}" 
+                                                           decimalPlaces="2" 
+                                                           styleClass="form-control"/>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <p:outputLabel value="Espessura (cm)" for="espessura"/>
+                                            <p:inputNumber id="espessura" 
+                                                           value="#{produtoBean.produto.espessuraCm}" 
+                                                           decimalPlaces="2" 
+                                                           styleClass="form-control"/>
+                                        </div>
+                                    </div>
+                                </p:tab>
+                                
+                                <p:tab title="Estoque e Validade">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <p:outputLabel value="Quantidade Disponível" for="quantidade"/>
+                                            <p:inputNumber id="quantidade" 
+                                                           value="#{produtoBean.produto.quantidadeDisponivel}" 
+                                                           styleClass="form-control"/>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <p:outputLabel value="Código de Barras" for="codigoBarras"/>
+                                            <p:inputText id="codigoBarras" 
+                                                         value="#{produtoBean.produto.codigoBarras}" 
+                                                         styleClass="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <p:outputLabel value="Data de Fabricação" for="dataFabricacao"/>
+                                            <p:datePicker id="dataFabricacao" 
+                                                          value="#{produtoBean.produto.dataFabricacao}" 
+                                                          styleClass="form-control"/>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <p:outputLabel value="Data de Validade" for="dataValidade"/>
+                                            <p:datePicker id="dataValidade" 
+                                                          value="#{produtoBean.produto.dataValidade}" 
+                                                          styleClass="form-control"/>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <p:outputLabel value="Prazo de Entrega (dias)" for="prazoEntrega"/>
+                                            <p:inputNumber id="prazoEntrega" 
+                                                           value="#{produtoBean.produto.prazoEntregaDias}" 
+                                                           styleClass="form-control"/>
+                                        </div>
+                                    </div>
+                                </p:tab>
+                            </p:tabView>
+
+                            <div class="mt-3">
+                                <p:commandButton value="Salvar Produto" 
+                                                 action="#{produtoBean.salvar}" 
+                                                 update=":produtoForm :produtoTable" 
+                                                 styleClass="btn btn-primary"/>
+                            </div>
+                        </h:form>
+
+                        <h:form id="produtoTable">
+                            <p:dataTable value="#{produtoBean.produtos}" var="produto" 
+                                         paginator="true" rows="10"
+                                         styleClass="table table-striped mt-4">
+                                <p:column headerText="ID">
+                                    <h:outputText value="#{produto.id}" />
+                                </p:column>
+                                <p:column headerText="Nome">
+                                    <h:outputText value="#{produto.nome}" />
+                                </p:column>
+                                <p:column headerText="Preço">
+                                    <h:outputText value="#{produto.preco}">
+                                        <f:convertNumber type="currency" currencySymbol="R$ " />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Categoria">
+                                    <h:outputText value="#{produto.categoria.nome}" />
+                                </p:column>
+                                <p:column headerText="Ações">
+                                    <p:commandButton icon="pi pi-pencil" title="Editar" 
+                                                     action="#{produtoBean.editar(produto)}"
+                                                     update=":produtoForm"/>
+                                    <p:commandButton icon="pi pi-trash" title="Excluir" 
+                                                     action="#{produtoBean.remover(produto)}"
+                                                     update=":produtoTable"/>
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Nova Categoria -->
+        <p:dialog header="Nova Categoria" widgetVar="novaCategoriaDialog" modal="true">
+            <h:form id="novaCategoriaForm">
+                <div class="mb-3">
+                    <p:outputLabel value="Nome da Categoria" for="nomeCategoria"/>
+                    <p:inputText id="nomeCategoria" 
+                                 value="#{categoriaBean.categoria.nome}" 
+                                 required="true" 
+                                 styleClass="form-control"/>
+                </div>
+                <div class="mb-3">
+                    <p:outputLabel value="Descrição" for="descricaoCategoria"/>
+                    <p:inputTextarea id="descricaoCategoria" 
+                                     value="#{categoriaBean.categoria.descricao}" 
+                                     styleClass="form-control"/>
+                </div>
+                <p:commandButton value="Salvar Categoria" 
+                                  action="#{categoriaBean.salvar}" 
+                                  oncomplete="PF('novaCategoriaDialog').hide()"
+                                  update=":produtoForm:categoria"
+                                  styleClass="btn btn-primary"/>
+            </h:form>
+        </p:dialog>
+    </div>
+</h:body>
+</html>
